@@ -67,6 +67,7 @@ define(['jquery',
                 'evaluate' :true,
                 'import' :true,
                 'resetfiles' :true,
+                'correctedfiles' : true,
                 'sort' :true,
                 'multidelete' :true,
                 'acetheme' :true,
@@ -1419,6 +1420,29 @@ define(['jquery',
                     VPLUtil.delay('updateMenu', updateMenu);
                 }).fail(showErrorMessage);
             }
+
+          function correctedFiles() {
+                VPLUtil.requestAction('correctedfiles', '', {}, options.ajaxurl)
+                .done( function(response) {
+                    var files = response.files;
+                    for (var fileName in files) {
+                        fileManager.addFile(files[fileName], true, VPLUtil.doNothing, showErrorMessage);
+                    }
+                    fileManager.fileListVisibleIfNeeded();
+                    //VPLUtil.delay(updateMenu);
+                 }).fail(showErrorMessage);
+            }
+
+            menuButtons.add({
+                name:'correctedfiles',
+                originalAction: function() {
+                    showMessage(str('surecorrectedfiles'), {
+                        title : str('correctedfiles'),
+                        ok : correctedFiles
+                    });
+                }
+            });
+
             menuButtons.add({
                 name:'resetfiles',
                 originalAction: function() {
@@ -1428,6 +1452,7 @@ define(['jquery',
                     });
                 }
             });
+
             menuButtons.add({
                 name:'save',
                 originalAction: function() {
@@ -1599,6 +1624,7 @@ define(['jquery',
             menuHtml += menuButtons.getHTML('import');
             menuHtml += menuButtons.getHTML('download');
             menuHtml += menuButtons.getHTML('resetfiles');
+            menuHtml += menuButtons.getHTML('correctedfiles');
             menuHtml += menuButtons.getHTML('sort');
             menuHtml += menuButtons.getHTML('multidelete');
             menuHtml += menuButtons.getHTML('fontsize');
@@ -1666,6 +1692,7 @@ define(['jquery',
                 menuButtons.enable('sort', nfiles - minNumberOfFiles > 1);
                 menuButtons.enable('multidelete', nfiles - minNumberOfFiles > 1);
                 menuButtons.enable('acetheme', true);
+                menuButtons.enable('correctedfiles', options.correctedfiles);
                 var sel;
                 if (!file || nfiles === 0) {
                     sel = [ 'rename', 'delete', 'undo', 'redo', 'select_all', 'find', 'find_replace', 'next' ];

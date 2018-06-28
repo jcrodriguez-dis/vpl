@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with VPL for Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Edit execution files
  *
@@ -22,22 +21,17 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author Juan Carlos Rodríguez-del-Pino <jcrodriguez@dis.ulpgc.es>
  */
-
 require_once(dirname( __FILE__ ) . '/../../../config.php');
 require_once(dirname( __FILE__ ) . '/../locallib.php');
 require_once(dirname( __FILE__ ) . '/../vpl.class.php');
 require_once(dirname( __FILE__ ) . '/../editor/editor_utility.php');
-
 require_login();
 $id = required_param( 'id', PARAM_INT );
-
 $vpl = new mod_vpl( $id );
 $instance = $vpl->get_instance();
 $vpl->prepare_page( 'forms/executionfiles.php', array ( 'id' => $id ) );
-
 $vpl->require_capability( VPL_MANAGE_CAPABILITY );
-$fgp = $vpl->get_required_fgm();
-
+$fgp = $vpl->get_fgm('execution');
 $options = Array ();
 $options ['restrictededitor'] = false;
 $options ['save'] = true;
@@ -51,16 +45,11 @@ $options ['minfiles'] = 0;
 $options ['maxfiles'] = 1000;
 $options ['saved'] = true;
 $options ['minfiles'] = $fgp->get_numstaticfiles();
-
 session_write_close();
-
 vpl_editor_util::generate_requires($options);
-
 $vpl->print_header( get_string( 'executionfiles', VPL ) );
 $vpl->print_heading_with_help( 'executionfiles' );
 echo $OUTPUT->box_start();
-
 vpl_editor_util::print_tag();
-
 echo $OUTPUT->box_end();
 $vpl->print_footer_simple();
